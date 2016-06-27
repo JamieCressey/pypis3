@@ -47,7 +47,10 @@ class Package(object):
         except CalledProcessError as e:
             raise RuntimeError(e.output.rstrip())
 
-        match = re.search('^making hard links in (.+)\.\.\.$', stdout, flags=re.MULTILINE)
+        match = re.search(
+            '^making hard links in (.+)\.\.\.$',
+            stdout,
+            flags=re.MULTILINE)
 
         if not match:
             raise RuntimeError(stdout)
@@ -65,7 +68,10 @@ class Package(object):
 class Index(object):
     """Index containing URLs to all versions of a package, to be rendered to HTML."""
 
-    template = Environment(loader=PackageLoader(__prog__, 'templates')).get_template('index.html.j2')
+    template = Environment(
+        loader=PackageLoader(
+            __prog__,
+            'templates')).get_template('index.html.j2')
 
     def __init__(self, url, packages):
         self.packages = set(packages)
@@ -78,7 +84,9 @@ class Index(object):
         for match in re.findall('<a href=".+/((.+?-\d+\.\d+\.\d+).+)">', html):
             filenames[match[1]].add(match[0])
 
-        return Index(url, (Package(name, files) for name, files in filenames.iteritems()))
+        return Index(url, (Package(name, files)
+                           for name, files in filenames.iteritems()))
 
     def to_html(self):
-        return self.template.render({'url': self.url, 'packages': self.packages})
+        return self.template.render(
+            {'url': self.url, 'packages': self.packages})

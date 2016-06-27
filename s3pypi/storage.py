@@ -1,8 +1,6 @@
 import os
 
-import boto
-from boto.exception import S3ResponseError
-from boto.s3.key import Key
+import boto3
 
 from s3pypi.package import Index
 
@@ -14,35 +12,41 @@ __license__ = 'MIT'
 class S3Storage(object):
     """Abstraction for storing package archives and index files in an S3 bucket."""
 
-    def __init__(self, bucket, secret=None):
-        self.bucket = boto.connect_s3().get_bucket(bucket)
+    def __init__(self, bucket, secret=None, url=None):
+        self.s3 = boto3.client('s3')
+        self.bucket = bucket
         self.secret = secret
 
-        self.url = 'http://' + self.bucket.get_website_endpoint()
-        if secret:
-            self.url += '/' + secret
+        self.url = url
 
     def _key(self, package, filename):
         path = '%s/%s' % (package.name, filename)
-        return Key(self.bucket, '%s/%s' % (self.secret, path) if self.secret else path)
+        return self.s3.get_object(
+            Bucket=self.bucket,
+            Key=path)
 
     def get_index(self, package):
         try:
-            html = self._key(package, 'index.html').get_contents_as_string()
+            html = self._key(package, 'index.html')['Body']
             return Index.parse(self.url, html)
-        except S3ResponseError:
+        except Exception:
             return Index(self.url, [])
 
     def put_index(self, package, index):
-        k = self._key(package, 'index.html')
-        k.set_metadata('Content-Type', 'text/html')
-        k.set_metadata('Cache-Control', 'public, must-revalidate, proxy-revalidate, max-age=0')
-        k.set_contents_from_string(index.to_html())
-        k.set_acl('public-read')
+        self.s3.put_object(
+            ACL='private',
+            Body=index.to_html(),
+            Bucket=self.bucket,
+            ContentType='text/html',
+            Key='{}/{}'.format(package.name, 'index.html')
+        )
 
     def put_package(self, package):
         for filename in package.files:
-            k = self._key(package, filename)
-            k.set_metadata('Content-Type', 'application/x-gzip')
-            k.set_contents_from_filename(os.path.join('dist', filename))
-            k.set_acl('public-read')
+            self.s3.put_object(
+                ACL='private',
+                Body=os.path.join('dist', filename),
+                Bucket=self.bucket,
+                ContentType='application/x-gzip',
+                Key='{}/{}'.format(package.name, filename)
+            )
