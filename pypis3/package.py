@@ -6,10 +6,10 @@ from subprocess import check_output, CalledProcessError
 
 from jinja2 import Environment, PackageLoader
 
-from s3pypi import __prog__
+from pypis3 import __prog__
 
-__author__ = 'Matteo De Wint'
-__copyright__ = 'Copyright 2016, November Five'
+__author__ = 'Jamie Cressey'
+__copyright__ = 'Copyright 2016, Jamie Cressey'
 __license__ = 'MIT'
 
 

@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 import argparse
 
-from s3pypi import __prog__, __version__
-from s3pypi.package import Package
-from s3pypi.storage import S3Storage
+from pypis3 import __prog__, __version__
+from pypis3.package import Package
+from pypis3.storage import S3Storage
 
-__author__ = 'Matteo De Wint'
-__copyright__ = 'Copyright 2016, November Five'
+__author__ = 'Jamie Cressey'
+__copyright__ = 'Copyright 2016, Jamie Cressey'
 __license__ = 'MIT'
 
 
 def main():
     p = argparse.ArgumentParser(prog=__prog__, version=__version__)
     p.add_argument('--bucket', required=True, help='S3 bucket')
-    p.add_argument('--secret', help='S3 secret')
     p.add_argument('--url', help='Custom URL', default=None)
     p.add_argument(
         '--no-wheel',
@@ -23,7 +22,7 @@ def main():
     args = p.parse_args()
 
     package = Package.create(args.wheel)
-    storage = S3Storage(args.bucket, args.secret, args.url)
+    storage = S3Storage(args.bucket, args.url)
 
     index = storage.get_index(package)
     index.packages.discard(package)

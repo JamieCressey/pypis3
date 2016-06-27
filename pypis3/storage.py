@@ -2,20 +2,19 @@ import os
 
 import boto3
 
-from s3pypi.package import Index
+from pypis3.package import Index
 
-__author__ = 'Matteo De Wint'
-__copyright__ = 'Copyright 2016, November Five'
+__author__ = 'Jamie Cressey'
+__copyright__ = 'Copyright 2016, Jamie Cressey'
 __license__ = 'MIT'
 
 
 class S3Storage(object):
     """Abstraction for storing package archives and index files in an S3 bucket."""
 
-    def __init__(self, bucket, secret=None, url=None):
+    def __init__(self, bucket, url=None):
         self.s3 = boto3.client('s3')
         self.bucket = bucket
-        self.secret = secret
 
         self.url = url
 
