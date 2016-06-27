@@ -42,10 +42,11 @@ class S3Storage(object):
 
     def put_package(self, package):
         for filename in package.files:
-            self.s3.put_object(
-                ACL='private',
-                Body=os.path.join('dist', filename),
-                Bucket=self.bucket,
-                ContentType='application/x-gzip',
-                Key='{}/{}'.format(package.name, filename)
-            )
+            with open(os.path.join('dist', filename), 'r') as fh:
+                self.s3.put_object(
+                    ACL='private',
+                    Body=fh.read(),
+                    Bucket=self.bucket,
+                    ContentType='application/x-gzip',
+                    Key='{}/{}'.format(package.name, filename)
+                )
