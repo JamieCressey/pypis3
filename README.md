@@ -1,7 +1,7 @@
 PyPiS3
 ======
 
-PyPiS3 is a fork of [S3PyPI](https://github.com/novemberfiveco/s3pypi) is a CLI tool for creating a Python Package Repository in an S3 bucket, adapted for use as a private PyPi repository entirely backed by S3 storage.
+PyPiS3 is a fork of [S3PyPI](https://github.com/novemberfiveco/s3pypi); a CLI tool for creating a Python Package Repository in an S3 bucket, adapted for use as a private PyPi repository entirely backed by S3 storage. Kudos to Ruben Van den Bossche and Matteo De Wint for their initial work.
 
 
 Installation
