@@ -33,7 +33,7 @@ You can now use ``pypis3`` to create Python packages and upload them to your S3 
 
 ```bash
 cd /path/to/your/awesome-project/
-pypis3 --bucket mybucket --url pypi.example.com
+pypis3 --bucket mybucket --url http://pypi.example.com
 ```
 
 
@@ -53,3 +53,8 @@ Alternatively, you can configure the index URL in ``~/.pip/pip.conf``:
 extra-index-url = http://pypi.example.com
 ```
 
+
+TODO
+-------------------
+
+HTTPS support
